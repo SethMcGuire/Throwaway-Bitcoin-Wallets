@@ -46,23 +46,29 @@ class Homepage extends Component {
         const {address, privateKey} = this.state;
         var hashURL = `https://api.blockcypher.com/v1/btc/test3/addrs/${address}`
 
-            // axios.get(hashURL).then((response) => {
-            //     this.setState({
-            //         hash: response.data.txrefs[0].tx_hash
-            //     });
-            // })
+
+            axios.get(hashURL).then((response) => {
+                this.setState({
+                    hash: response.data.txrefs[0].tx_hash
+                })
+            }).then((result) => {
+
             var tx = new bitcoin.TransactionBuilder(testnet);
-            console.log(tx)
     
-            // var txId = this.state.hash;
-            // tx.addInput(txId, 0)
+            var txId = this.state.hash;
+
+            console.log(txId);
+
+            tx.addInput(txId, 0)
     
-            // tx.addOutput(this.state.add, this.state.amount)
+            tx.addOutput(this.state.add, this.state.amount)
     
-            // var keyPair2 = bitcoin.ECPair.fromWIF(privateKey);
+            var keyPair2 = bitcoin.ECPair.fromWIF(privateKey);
     
-            // tx.sign(0, keyPair2);
-            // console.log(tx.build().toHex());
+            tx.sign(0, keyPair2);
+            console.log(tx.build().toHex());
+            }
+        )
     
     }
 
@@ -84,16 +90,18 @@ class Homepage extends Component {
         const {address, privateKey, balance, balance2, add, amount} = this.state;
         return (
             <div className="container-fluid">
-            <button className="btn btn-primary" onClick={this.createWallet}>Generate Wallet</button>
-            <button className="btn btn-warning" onClick={this.checkBalance}>Check Balance</button>
+            <div className="walletStuff">
+            <button className="btn btn-primary" onClick={this.createWallet}>Generate New Wallet</button><br />
             <div>
                 <h2>Address: {address}</h2>
-                <h4>Balance: {balance2}</h4>
-                <h5>Private Key: {privateKey}</h5>
+                <h4>Balance: {balance2}</h4>  <button className="btn btn-warning" onClick={this.checkBalance}>Refresh Balance</button>
+            </div>
             </div>
             <form id="transaction">
-                <input id="add" value={add} onChange={this.onChangeAddress} name="add" type="text" placeholder="Recipient's BTC Address" autoFocus autoComplete="off"></input>
-                <input id="amount" value={amount} onChange={this.onChangeAmount} name="amount" type="text" placeholder="Amount of BTC to send"></input>
+                <h4>Send bitcoin!</h4>
+                <input id="add" value={add} onChange={this.onChangeAddress} name="add" type="text" placeholder="Recipient's BTC Address" autoFocus autoComplete="off"></input><br /><br />
+                
+                <input id="amount" value={amount} onChange={this.onChangeAmount} name="amount" type="text" placeholder="Amount of BTC to send"></input><br /><br />
                 <button className="btn btn-danger" onClick={this.createTransaction}>Send</button>
             </form>
             </div>
