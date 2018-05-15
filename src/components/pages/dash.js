@@ -5,9 +5,9 @@ import blockcypher from 'blockcypher';
 import jQuery from 'jquery';
 import { error } from 'util';
 
-var testnet = bitcoin.networks.testnet;
+var dash = bitcoin.networks.dash;
 
-class Homepage extends Component {
+class Dash extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +29,7 @@ class Homepage extends Component {
 
     createWallet = (e) => {
         e.preventDefault()
-        var keyPair = bitcoin.ECPair.makeRandom();
+        var keyPair = bitcoin.ECPair.makeRandom({network: dash});
         console.log(keyPair.toWIF());
         console.log(keyPair.getAddress());
                 
@@ -44,7 +44,7 @@ class Homepage extends Component {
     createTransaction = (e) => {
         e.preventDefault()
         const {address, privateKey} = this.state;
-        var hashURL = `https://api.blockcypher.com/v1/btc/main/addrs/${address}`
+        var hashURL = `https://api.blockcypher.com/v1/dash/main/addrs/${address}`
 
 
             axios.get(hashURL).then((response) => {
@@ -53,7 +53,7 @@ class Homepage extends Component {
                 })
             }).then((result) => {
 
-            var tx = new bitcoin.TransactionBuilder();
+            var tx = new bitcoin.TransactionBuilder(dash);
     
             var txId = this.state.hash;
 
@@ -63,7 +63,7 @@ class Homepage extends Component {
     
             tx.addOutput(this.state.add, this.state.amount)
     
-            var keyPair2 = bitcoin.ECPair.fromWIF(privateKey);
+            var keyPair2 = bitcoin.ECPair.fromWIF(privateKey, dash);
     
             tx.sign(0, keyPair2);
             console.log(tx.build().toHex());
@@ -75,7 +75,7 @@ class Homepage extends Component {
     checkBalance = (e) => {
         e.preventDefault()
         const {address} = this.state
-        var blockcypherURL = `https://api.blockcypher.com/v1/btc/main/addrs/${address}/balance`
+        var blockcypherURL = `https://api.blockcypher.com/v1/dash/main/addrs/${address}/balance`
 
         axios.get(blockcypherURL).then((response) => {
             this.setState({
@@ -98,24 +98,22 @@ class Homepage extends Component {
             </div>
             </div>
             <form id="transaction">
-                <h4>Send bitcoin!</h4>
-                <input id="add" value={add} onChange={this.onChangeAddress} name="add" type="text" placeholder="Recipient's BTC Address" autoFocus autoComplete="off"></input><br /><br />
+                <h4>Send Dash!</h4>
+                <input id="add" value={add} onChange={this.onChangeAddress} name="add" type="text" placeholder="Recipient's DASH Address" autoFocus autoComplete="off"></input><br /><br />
                 
-                <input id="amount" value={amount} onChange={this.onChangeAmount} name="amount" type="text" placeholder="Amount of BTC to send"></input><br /><br />
+                <input id="amount" value={amount} onChange={this.onChangeAmount} name="amount" type="text" placeholder="Amount of DASH to send"></input><br /><br />
                 <button className="btn btn-danger" onClick={this.createTransaction}>Send</button>
             </form>
-            <br />
-            <br />
-            <a href="/litecoin">Litecoin</a>
-            <br />
-            <a href="/dogecoin">Dogecoin</a>
-            <br />
-            <a href="/dash">Dash</a>
+                <br />
+                <br />
+                <a href="/">Bitcoin</a> 
+                <br />
+                <a href="/litecoin">Litecoin</a>
+                <br />
+                <a href="/dogecoin">Dogecoin</a>
             </div>
         );
     }
 }
 
-export default Homepage;
-
-//Send testnet back to 2N8hwP1WmJrFF5QWABn38y63uYLhnJYJYTF
+export default Dash;

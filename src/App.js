@@ -8,6 +8,9 @@ import {
 
 //components
 import Homepage from './components/pages/homePage';
+import Litecoin from './components/pages/litecoin';
+import Dogecoin from './components/pages/dogecoin';
+import Dash from './components/pages/dash';
 
 class App extends Component {
   render() {
@@ -17,6 +20,9 @@ class App extends Component {
 
 
         <Route exact path='/' component={Homepage} />
+        <Route exact path='/litecoin' component={Litecoin} />
+        <Route exact path='/dogecoin' component={Dogecoin} />
+        <Route exact path='/dash' component={Dash} />
 
       </div>
       </Router>
